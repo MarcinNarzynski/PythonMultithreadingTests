@@ -5,7 +5,7 @@ import os
 import math
 
 INSIDE_LOOP = 7000
-QUEUE_ELEMENTS = 1000  # Don't use to big queue - program hangs unless there is no consumer of output queue.
+QUEUE_ELEMENTS = 400  # Don't use to big queue - program hangs unless there is no consumer of output queue.
 
 input_q = Queue()
 output_q = Queue()
@@ -105,7 +105,6 @@ if __name__ == '__main__':
 
     results = []
     for number in range(1, cpu_no + 5):
-    # for number in range(3, 5):
         result = [number, main_loop(number)]
         results.append(result)
 
