@@ -16,11 +16,12 @@ class Result:
 
 
 async def worker(worker_id: int, input_data: dict[str, int], loop_count: int) -> Result:
+    print(f"{F.LIGHTBLUE_EX}Worker {worker_id} started.")
     for _ in range(loop_count):
         input_data["counter"] += 1
     await sleep(random())
     finished = round(time.perf_counter(), 3)
-    print(f"{F.LIGHTBLUE_EX}Worker {worker_id} finished.")
+    print(f"{F.RED}Worker {worker_id} finished.")
     return Result(worker_id, finished, input_data["counter"])
     # return Result(worker_id, finished)
 
@@ -32,7 +33,7 @@ results = []
 
 async def start_tasks(worker_count: int):
     global results
-    workers = [worker(worker_id, counter, 1_000_000) for worker_id in range(worker_count)]
+    workers = [worker(worker_id + 1, counter, 1_000_000) for worker_id in range(worker_count)]
     start = time.perf_counter()
     results = await asyncio.gather(*workers)  # run all tasks and wait untill all finish the job
     timer = time.perf_counter() - start
