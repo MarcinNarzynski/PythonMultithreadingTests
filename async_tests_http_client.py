@@ -10,6 +10,7 @@ TASK_GROUP = 5
 
 
 class HttpClient:
+    # https://docs.aiohttp.org/en/stable/client.html
     def __init__(self):
         self.session = ClientSession(base_url="http://httpbin.org")
 
