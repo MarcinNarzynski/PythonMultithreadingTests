@@ -1,4 +1,5 @@
 import asyncio
+import random
 from asyncio import Queue
 
 from aiohttp import ClientSession
@@ -17,8 +18,8 @@ class HttpClient:
     def __del__(self):
         # Solution for closing session from https://github.com/aio-libs/aiohttp/issues/2800
         if not self.session.closed:
-            if self.session._connector_owner:
-                self.session._connector.close()
+            if self.session.connector_owner:
+                self.session.connector.close()
             self.session._connector = None
 
     async def get_example_status(self, data: str):
@@ -37,6 +38,7 @@ async def worker(worker_id: int, input_data: Queue, result_data: Queue, http_cli
         status = await http_client.get_example_status(to_do)
         await result_data.put((to_do, status))
 
+        await asyncio.sleep(random.random()*3 + 3)  # sleep 3-6 sec
         print(f"{F.GREEN}  Worker {worker_id} processed the request {to_do}")
         input_data.task_done()
 
@@ -49,8 +51,10 @@ async def main():
     print(input_data)
 
     # Create fixed number of workers waiting for incoming tasks:
-    workers = [asyncio.create_task(worker(worker_id=idx + 1, input_data=input_data, result_data=result_data, http_client=http_client))
+    workers = [asyncio.create_task(worker(worker_id=idx + 1, input_data=input_data, result_data=result_data, http_client=http_client), name="worker")
                for idx in range(WORKERS_COUNT)]
+
+    await asyncio.sleep(1)  # not necessary, just to ensure workers are ready first, it must be a better way
 
     # Fill input data to make workers to process tasks:
     for idx in range(TASKS_COUNT):

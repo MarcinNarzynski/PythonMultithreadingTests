@@ -5,7 +5,7 @@ import os
 import math
 
 INSIDE_LOOP = 7000
-QUEUE_ELEMENTS = 400  # Don't use to big queue - program hangs unless there is no consumer of output queue.
+QUEUE_ELEMENTS = 800  # Don't use to big queue - program hangs unless there is no consumer of output queue.
 
 input_q = Queue()
 output_q = Queue()
